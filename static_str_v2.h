@@ -94,6 +94,10 @@ const char* str_istr(const char* str, const char* pattern);
 */
 const wchar_t* wstr_istr(const wchar_t* wstr, const wchar_t* pattern);
 
+/*
+    let \r \n \t visible.
+*/
 void str_visible(char* buf, int* len, int limit, const char* str);
 
 #endif
+
