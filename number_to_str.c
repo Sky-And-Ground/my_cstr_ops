@@ -1,3 +1,6 @@
+/*
+    some function to deal with numbers between string.
+*/
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -6,6 +9,7 @@ void str_reverse(char* buf, int len);
 int int_to_str(int number, char* buf, int limit);
 int uint_to_str_with_base(unsigned int number, int base, char* buf, int limit);
 int float_to_str(float number, int precision, char* buf, int limit);
+int copy_back(char* dst, int limit, const char* src, int len);
 
 void str_reverse(char* buf, int len) {
     int i, j;
@@ -39,18 +43,7 @@ int int_to_str(int number, char* buf, int limit) {
     }
 
     str_reverse(inner_buf, len);
-    
-    /* copy back. */
-    if (len + 1 <= limit) {
-        memcpy(buf, inner_buf, len * sizeof(char));
-        buf[len] = '\0';
-        return len;
-    }
-    else {
-        memcpy(buf, inner_buf, (limit - 1) * sizeof(char));
-        buf[limit - 1] = '\0';
-        return limit - 1;
-    }
+    return copy_back(buf, limit, inner_buf, len);
 }
 
 int uint_to_str_with_base(unsigned int number, int base, char* buf, int limit) {
@@ -80,17 +73,7 @@ int uint_to_str_with_base(unsigned int number, int base, char* buf, int limit) {
     }
 
     str_reverse(inner_buf, len);
-
-    if (len + 1 <= limit) {
-        memcpy(buf, inner_buf, len * sizeof(char));
-        buf[len] = '\0';
-        return len;
-    }
-    else {
-        memcpy(buf, inner_buf, (limit - 1) * sizeof(char));
-        buf[limit - 1] = '\0';
-        return limit - 1;
-    }
+    return copy_back(buf, limit, inner_buf, len);
 }
 
 int float_to_str(float number, int precision, char* buf, int limit) {
@@ -148,22 +131,25 @@ int float_to_str(float number, int precision, char* buf, int limit) {
         len += int_to_str((int)number, inner_buf + len, sizeof(inner_buf) / sizeof(char) - len);
     }
 
-    /* copy back. */
+    return copy_back(buf, limit, inner_buf, len);
+}
+
+int copy_back(char* dst, int limit, const char* src, int len) {
     if (len + 1 <= limit) {
-        memcpy(buf, inner_buf, len * sizeof(char));
-        buf[len] = '\0';
+        memcpy(dst, src, len * sizeof(char));
+        dst[len] = '\0';
         return len;
     }
     else {
-        memcpy(buf, inner_buf, (limit - 1) * sizeof(char));
-        buf[limit - 1] = '\0';
+        memcpy(dst, src, (limit - 1) * sizeof(char));
+        dst[limit - 1] = '\0';
         return limit - 1;
     }
 }
 
 int main(void) {
     char buf[32];
-    int len = uint_to_str_with_base(17, 8, buf, 32);
+    int len = float_to_str(-27.6097f, 3, buf, sizeof(buf) / sizeof(buf[0]));
     printf("%d, %s\n", len, buf);
     return 0;
 }
